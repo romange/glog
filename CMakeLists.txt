@@ -39,6 +39,7 @@ option (PRINT_UNSYMBOLIZED_STACK_TRACES
   "Print file offsets in traces instead of symbolizing" OFF)
 option (WITH_CUSTOM_PREFIX "Enable support for user-generated message prefixes" ON)
 option (WITH_GFLAGS "Use gflags" ON)
+option (WITH_ABSL "Use absl flags" OFF)
 option (WITH_GTEST "Use Google Test" ON)
 option (WITH_PKGCONFIG "Enable pkg-config support" ON)
 option (WITH_SYMBOLIZE "Enable symbolize module" ON)
@@ -86,6 +87,13 @@ if (WITH_GFLAGS)
     determine_gflags_namespace (gflags_NAMESPACE)
   endif (gflags_FOUND)
 endif (WITH_GFLAGS)
+
+if (WITH_ABSL)
+  set (HAVE_ABSL_FLAGS 1)
+  set (ac_cv_have_abslflags 1)
+else (WITH_ABSL)
+set (ac_cv_have_abslflags 0)
+endif (WITH_ABSL)
 
 find_package (Threads)
 find_package (Unwind)
@@ -1025,7 +1033,7 @@ write_basic_package_version_file (
   ${CMAKE_CURRENT_BINARY_DIR}/glog-config-version.cmake
   COMPATIBILITY SameMajorVersion)
 
-export (TARGETS glog NAMESPACE glog:: FILE glog-targets.cmake)
+# export (TARGETS glog NAMESPACE glog:: FILE glog-targets.cmake)
 export (PACKAGE glog)
 
 get_filename_component (_PREFIX "${CMAKE_INSTALL_PREFIX}" ABSOLUTE)

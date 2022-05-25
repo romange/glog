@@ -89,6 +89,10 @@
 #include <gflags/gflags.h>
 #endif
 
+#if @ac_cv_have_abslflags@
+#include <absl/flags/declare.h>
+#endif
+
 #if @ac_cv_cxx11_atomic@ && __cplusplus >= 201103L
 #include <atomic>
 #elif defined(GLOG_OS_WINDOWS)
@@ -393,6 +397,14 @@ typedef void(*CustomPrefixCallback)(std::ostream& s, const LogMessageInfo& l, vo
 
 #ifdef DECLARE_uint32
 #undef DECLARE_uint32
+#endif
+
+#if @ac_cv_have_abslflags@
+#define DECLARE_VARIABLE 1
+#define DECLARE_bool(name) ABSL_DECLARE_FLAG(bool, name)
+#define DECLARE_int32(name) ABSL_DECLARE_FLAG(@ac_google_namespace@::int32, name)
+#define DECLARE_uint32(name) ABSL_DECLARE_FLAG(@ac_google_namespace@::uint32, name)
+#define DECLARE_string(name) ABSL_DECLARE_FLAG(std::string, name)
 #endif
 
 #ifndef DECLARE_VARIABLE

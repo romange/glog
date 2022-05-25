@@ -319,11 +319,6 @@ class WriterMutexLock {
   void operator=(const WriterMutexLock&);
 };
 
-// Catch bug where variable name is omitted, e.g. MutexLock (&mu);
-#define MutexLock(x) COMPILE_ASSERT(0, mutex_lock_decl_missing_var_name)
-#define ReaderMutexLock(x) COMPILE_ASSERT(0, rmutex_lock_decl_missing_var_name)
-#define WriterMutexLock(x) COMPILE_ASSERT(0, wmutex_lock_decl_missing_var_name)
-
 }  // namespace MUTEX_NAMESPACE
 
 using namespace MUTEX_NAMESPACE;

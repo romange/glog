@@ -64,6 +64,14 @@
 #include <glog/log_severity.h>
 
 #if defined(__GNUC__)
+
+#if @ac_cv_have_abslflags@
+  extern int32_t absl_proxy_v;
+  #define VLEVEL (@ac_google_namespace@::absl_proxy_v)
+#else
+  #define VLEVEL (FLAGS_v)
+#endif
+
 // We emit an anonymous static int* variable at every VLOG_IS_ON(n) site.
 // (Normally) the first time every VLOG_IS_ON(n) site is hit,
 // we determine what variable will dynamically control logging at this site:
@@ -74,7 +82,7 @@
   __extension__  \
   ({ static @ac_google_namespace@::SiteFlag vlocal__ = {NULL, NULL, 0, NULL};       \
      @ac_google_namespace@::int32 verbose_level__ = (verboselevel);                    \
-     (vlocal__.level == NULL ? @ac_google_namespace@::InitVLOG3__(&vlocal__, &FLAGS_v, \
+     (vlocal__.level == NULL ? @ac_google_namespace@::InitVLOG3__(&vlocal__, &VLEVEL, \
                         __FILE__, verbose_level__) : *vlocal__.level >= verbose_level__); \
   })
 #else

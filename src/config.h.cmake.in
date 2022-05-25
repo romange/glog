@@ -34,6 +34,8 @@
 /* define if you have google gflags library */
 #cmakedefine HAVE_LIB_GFLAGS
 
+#cmakedefine HAVE_ABSL_FLAGS
+
 /* define if you have google gmock library */
 #cmakedefine HAVE_LIB_GMOCK
 

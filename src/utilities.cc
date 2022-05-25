@@ -141,7 +141,7 @@ static void DumpStackTrace(int skip_count, DebugWriter *writerfn, void *arg) {
   int depth = GetStackTrace(stack, ARRAYSIZE(stack), skip_count+1);
   for (int i = 0; i < depth; i++) {
 #if defined(HAVE_SYMBOLIZE)
-    if (FLAGS_symbolize_stacktrace) {
+    if (FLAG(symbolize_stacktrace)) {
       DumpPCAndSymbol(writerfn, arg, stack[i], "    ");
     } else {
       DumpPC(writerfn, arg, stack[i], "    ");

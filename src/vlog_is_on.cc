@@ -43,14 +43,24 @@
 #include <glog/logging.h>
 #include <glog/raw_logging.h>
 #include "base/googleinit.h"
+#include "config.h"
 
 // glog doesn't have annotation
 #define ANNOTATE_BENIGN_RACE(address, description)
 
 using std::string;
 
+#ifdef HAVE_ABSL_FLAGS
+
+ABSL_FLAG(int32_t, v, 0, "Show all VLOG(m) messages for m <= this."
+" Overridable by --vmodule.").OnUpdate([] {
+      GOOGLE_NAMESPACE::absl_proxy_v = absl::GetFlag(FLAGS_v);
+    });
+
+#else
 GLOG_DEFINE_int32(v, 0, "Show all VLOG(m) messages for m <= this."
 " Overridable by --vmodule.");
+#endif
 
 GLOG_DEFINE_string(vmodule, "", "per-module verbose level."
 " Argument is a comma-separated list of <module name>=<log level>."
@@ -59,6 +69,8 @@ GLOG_DEFINE_string(vmodule, "", "per-module verbose level."
 " <log level> overrides any value given by --v.");
 
 _START_GOOGLE_NAMESPACE_
+
+int32_t absl_proxy_v = 0;
 
 namespace glog_internal_namespace_ {
 
@@ -132,7 +144,8 @@ static void VLOG2Initializer() {
   // Can now parse --vmodule flag and initialize mapping of module-specific
   // logging levels.
   inited_vmodule = false;
-  const char* vmodule = FLAGS_vmodule.c_str();
+  string vmodule_str = FLAG(vmodule);
+  const char* vmodule = vmodule_str.c_str();
   const char* sep;
   VModuleInfo* head = NULL;
   VModuleInfo* tail = NULL;
@@ -164,7 +177,7 @@ static void VLOG2Initializer() {
 
 // This can be called very early, so we use SpinLock and RAW_VLOG here.
 int SetVLOGLevel(const char* module_pattern, int log_level) {
-  int result = FLAGS_v;
+  int result = FLAG(v);
   size_t const pattern_len = strlen(module_pattern);
   bool found = false;
   {

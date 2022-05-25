@@ -123,8 +123,8 @@ static char crash_buf[kLogBufSize + 1] = { 0 };  // Will end in '\0'
 GLOG_ATTRIBUTE_FORMAT(printf, 4, 5)
 void RawLog__(LogSeverity severity, const char* file, int line,
               const char* format, ...) {
-  if (!(FLAGS_logtostdout || FLAGS_logtostderr ||
-        severity >= FLAGS_stderrthreshold || FLAGS_alsologtostderr ||
+  if (!(FLAG(logtostdout) || FLAG(logtostderr) ||
+        severity >= FLAG(stderrthreshold) || FLAG(alsologtostderr) ||
         !IsGoogleLoggingInitialized())) {
     return;  // this stderr log message is suppressed
   }

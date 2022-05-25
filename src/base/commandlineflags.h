@@ -58,6 +58,25 @@
 #include <gflags/gflags.h>
 
 #else
+#ifdef HAVE_ABSL_FLAGS
+#include <absl/flags/flag.h>
+
+#define FLAG(name) absl::GetFlag(FLAGS_##name)
+
+#define DEFINE_bool(name, value, meaning) \
+  ABSL_FLAG(bool, name, value, meaning)
+
+#define DEFINE_int32(name, value, meaning) \
+  ABSL_FLAG(GOOGLE_NAMESPACE::int32, name, value, meaning)
+
+#define DEFINE_uint32(name, value, meaning) \
+  ABSL_FLAG(GOOGLE_NAMESPACE::uint32, name, value, meaning)
+
+#define DEFINE_string(name, value, meaning) \
+  ABSL_FLAG(std::string, name, value, meaning)
+
+
+#else
 
 #include <glog/logging.h>
 
@@ -108,6 +127,7 @@
   }                                                           \
   using fLS::FLAGS_##name
 
+#endif
 #endif  // HAVE_LIB_GFLAGS
 
 // Define GLOG_DEFINE_* using DEFINE_* . By using these macros, we
