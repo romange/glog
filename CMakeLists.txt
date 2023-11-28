@@ -543,6 +543,17 @@ configure_file (src/glog/vlog_is_on.h.in glog/vlog_is_on.h @ONLY)
 
 add_compile_options ($<$<AND:$<BOOL:${HAVE_NO_UNNAMED_TYPE_TEMPLATE_ARGS}>,$<NOT:$<CXX_COMPILER_ID:GNU>>>:-Wno-unnamed-type-template-args>)
 
+# GCC bugs
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11")
+  # These diagnostics would be great if they worked, but are just completely broken
+  # and produce bogus errors on external libraries like fmt.
+  add_compile_options(
+      -Wno-array-bounds
+      -Wno-stringop-overread
+      -Wno-stringop-overflow
+  )
+endif()
+
 set (_glog_CMake_BINDIR ${CMAKE_INSTALL_BINDIR})
 set (_glog_CMake_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
 set (_glog_CMake_LIBDIR ${CMAKE_INSTALL_LIBDIR})
